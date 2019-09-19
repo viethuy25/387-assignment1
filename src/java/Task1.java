@@ -79,7 +79,7 @@ public class Task1 extends HttpServlet {
                 out.println("<table " + borderStyle + ">");
                 out.println("<tr>");
                 out.println("<th>Request Method: </th>");
-                out.println("<td>" + format + "</td>");
+                out.println("<td>" + request.getMethod() + "</td>");
                 out.println("</tr>");
                 out.println("</table>");
                 
@@ -131,7 +131,7 @@ public class Task1 extends HttpServlet {
                 out.println("<h1>Servlet Task1 at " + request.getContextPath() + "</h1>");
                 out.println("<br>");
 
-                out.println("<div>Request Method: "+ method + "</div>");
+                out.println("<div>Request Method: "+ request.getMethod() + "</div>");
 
                 out.println("<div>Request Headers: </div>");
                 for (String key : map.keySet()) {
@@ -154,17 +154,28 @@ public class Task1 extends HttpServlet {
         }
         
         if ("xml".equals(format)) {
+            response.setContentType("text/xtml;charset=UTF-8");
+            
             try (PrintWriter out = response.getWriter()) {
                 /* TODO output your page here. You may use following sample code. */
-                out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                out.append("<response>");
-                out.append("<response_method>Request method: ").append(format).append("</response_method>");
+                out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+                out.append("<response>\n");
+                out.append("    <response_method>").append(request.getMethod()).append("</response_method> \n");
 
-                out.append("<response_headers>Request headers: ");
-                out.append("</response_headers>");
+                out.append("    <response_headers>\n");
+                for (String key : map.keySet()) {
+                    out.append("        <header name=\"").append(key).append("\">")
+                            .append(map.get(key)).append("</header>\n");
+                }
+                out.append("    </response_headers>\n");
 
-                out.append("<query_string>");
-                out.append("</query_string>");
+                out.append("    <query_string>\n");
+                for (String key : parameters){
+                    String[] tag = key.split("=");
+                    out.append("        <").append(tag[0]).append(">").append(tag[1]).
+                            append("</").append(tag[0]).append(">\n");
+                }
+                out.append("    </query_string>\n");
 
                 out.append("</response>");
 
